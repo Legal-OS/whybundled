@@ -3,7 +3,7 @@ import { reporter as defaultReporter } from "../lib/reporter";
 import { createProgressBar } from "../lib/console/progress-bar";
 
 import { analyze, getStats } from "../lib";
-import { vlidateStatsJson } from "../lib/validate";
+import { validateStatsJson } from "../lib/validate";
 import { log, invalidStatsJson } from "../lib/console/messages";
 import { normalizeStats } from "../lib/normalize-stats";
 import { sortDefault } from "./common/sort-modules";
@@ -32,7 +32,7 @@ export default async function byCommand(
   const updateProgressBar = createProgressBar();
 
   const stats = normalizeStats(await getStats(statsFilePath));
-  if (!vlidateStatsJson(stats.modules)) {
+  if (!validateStatsJson(stats.modules)) {
     log(invalidStatsJson(statsFilePath));
     process.exit(1);
   }
@@ -45,7 +45,7 @@ export default async function byCommand(
     : modulesFollowingDepsChain(report.modules, by);
 
   sortDefault(modules);
-  defaultReporter.print(modules, report.chunks, { by: by }, limit);
+  defaultReporter.print(modules, report.chunks, stats.chunkMapping, { by: by }, limit);
 
   const timing = (Date.now() - start) / 1000;
   const rounded = Math.round(timing * 100) / 100;

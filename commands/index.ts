@@ -1,11 +1,12 @@
 import mm from "micromatch";
 import { analyze, getStats } from "../lib";
-import { vlidateStatsJson } from "../lib/validate";
+import { validateStatsJson } from "../lib/validate";
 import { log, invalidStatsJson } from "../lib/console/messages";
 import { normalizeStats } from "../lib/normalize-stats";
 import { reporter as defaultReporter } from "../lib/reporter";
 import { createProgressBar } from "../lib/console/progress-bar";
 import { sortModules } from "./common/sort-modules";
+import { ChunkMapping } from "../lib/analyze";
 
 /**
  * Whybundled – Why the hell is this module in a bundle?
@@ -42,7 +43,7 @@ export default async function defaultCommand(
   const updateProgressBar = createProgressBar();
 
   const stats = normalizeStats(await getStats(statsFilePath));
-  if (!vlidateStatsJson(stats.modules)) {
+  if (!validateStatsJson(stats.modules)) {
     log(invalidStatsJson(statsFilePath));
     process.exit(1);
   }
@@ -73,7 +74,7 @@ export default async function defaultCommand(
   const [sortKey, sortOrder] = (sortBy || "").split(":");
   sortModules(modules, sortKey, sortOrder);
 
-  defaultReporter.print(modules, report.chunks, {}, updatedLimit);
+  defaultReporter.print(modules, report.chunks, stats.chunkMapping, {}, updatedLimit);
 
   const timing = (Date.now() - start) / 1000;
   const rounded = Math.round(timing * 100) / 100;

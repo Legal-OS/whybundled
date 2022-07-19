@@ -12,7 +12,7 @@ function isValidModule(sample: WebpackModule) {
   return true;
 }
 
-export function vlidateStatsJson(modules: Array<WebpackModule>): boolean {
+export function validateStatsJson(modules: Array<WebpackModule>): boolean {
   const samples = modules.slice(0, 10);
   return samples.some(isValidModule);
 }

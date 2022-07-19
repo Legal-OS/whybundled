@@ -10,6 +10,7 @@ export type WebpackStats = {
 export type NormalizedWebpackStats = {
   chunks: Chunks;
   modules: Array<WebpackModule>;
+  chunkMapping: ChunkMapping;
 };
 
 export type WebpackChunk = {
@@ -23,6 +24,7 @@ export type WebpackModule = {
   id: string;
   name: string;
   size: number;
+  modules: Array<Omit<WebpackModule, "chunks" | "modules" | "reasons">>;
   chunks: Array<number>;
   reasons: Array<WebpackReason>;
 };
@@ -86,6 +88,8 @@ export type Chunks = {
     names: Array<string>;
   };
 };
+
+export type ChunkMapping = Record<string, string | number>
 
 const DEFAULT_IGNORE = ["multi *", "*-loader*"];
 

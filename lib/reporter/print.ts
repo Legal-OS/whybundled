@@ -12,7 +12,7 @@ import {
 } from "colorette";
 import treeify from "treeify";
 
-import type { Module, Reason, SubReason, Chunks } from "../analyze";
+import type { Module, Reason, SubReason, Chunks, ChunkMapping } from "../analyze";
 
 const greenBadge = (label: string) => bgGreen(black(` ${label} `));
 const yellowBadge = (label: string) => bgYellow(black(` ${label} `));
@@ -65,6 +65,7 @@ const sortReasons = (
 
 const printReasons = (
   rawReasons: Array<Reason>,
+  mapping: ChunkMapping,
   limit: number,
   by?: string
 ) => {
@@ -80,9 +81,13 @@ const printReasons = (
     (acc, reason: Reason) => {
       if (reason.type === "file") {
         acc[
-          `${printReasonName(reason.moduleName, by)}  ${dim(reason.loc)}  ${dim(
-            "[" + reason.importType + "]"
-          )}`
+          `${printReasonName(reason.moduleName, by)} ${
+            mapping[reason.moduleName]
+              ? (mapping[reason.moduleName].toString().startsWith("main")
+                  ? red
+                  : yellow)(`${mapping[reason.moduleName]}`)
+              : dim("(unknown chunk)")
+          } ${dim(reason.loc)} ${dim("[" + reason.importType + "]")}`
         ] = "null";
       } else if (reason.type === "module") {
         const subReasonsSubset = takeSubset(
@@ -215,6 +220,7 @@ const printChunkInfo = (module: Module, chunks: Chunks) => {
 const printFile = (
   module: Module,
   chunks: Chunks,
+  chunkMapping: ChunkMapping,
   limit: number,
   by?: string
 ) => {
@@ -230,13 +236,17 @@ const printFile = (
       chunksInfo.length &&
       `${entry ? "└─" : "├─"} ${magenta("chunks")}: ${chunksInfo.join(", ")}`,
     !entry && `└─ ${magenta("reasons")}:`,
-    !entry && indent(printReasons(module.reasons, limit, by), " ").join("\n"),
+    !entry &&
+      indent(printReasons(module.reasons, chunkMapping, limit, by), " ").join(
+        "\n"
+      ),
   ].filter((msg) => !!msg);
 };
 
 const printModule = (
   module: Module,
   chunks: Chunks,
+  chunkMapping: ChunkMapping,
   limit: number,
   by?: string
 ) => {
@@ -260,13 +270,17 @@ const printModule = (
     `${entry ? "└─" : "├─"} ${magenta("files")}: `,
     indent(printIncludedFiles(module.filesIncluded, limit)).join("\n"),
     !entry && `└─ ${magenta("reasons")}:`,
-    !entry && indent(printReasons(module.reasons, limit, by), " ").join("\n"),
+    !entry &&
+      indent(printReasons(module.reasons, chunkMapping, limit, by), " ").join(
+        "\n"
+      ),
   ].filter((msg) => !!msg);
 };
 
 export function print(
   report: Array<Module>,
   chunks: Chunks,
+  chunkMapping: ChunkMapping,
   flags: { by?: string },
   limit: number,
   logger: (msg?: string) => void = console.log
@@ -276,12 +290,16 @@ export function print(
     .forEach((module) => {
       if (module.type === "file") {
         logger();
-        logger(printFile(module, chunks, limit, flags.by).join("\n"));
+        logger(
+          printFile(module, chunks, chunkMapping, limit, flags.by).join("\n")
+        );
         logger(sep());
         logger();
       } else if (module.type === "module") {
         logger();
-        logger(printModule(module, chunks, limit, flags.by).join("\n"));
+        logger(
+          printModule(module, chunks, chunkMapping, limit, flags.by).join("\n")
+        );
         logger(sep());
         logger();
       }

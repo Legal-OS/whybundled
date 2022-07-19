@@ -22,7 +22,7 @@ test("should properly print reasons without clearName", async (t) => {
     normalizeStats(await getStats(f.find("with-external.json")))
   );
   const logger = createPrint();
-  print(stats.modules, stats.chunks, {}, 0, logger);
+  print(stats.modules, stats.chunks, {}, {}, 0, logger);
   t.snapshot(logger());
 });
 
@@ -31,7 +31,7 @@ test("should properly print simple stats.json", async (t) => {
     normalizeStats(await getStats(f.find("example-simple-stats.json")))
   );
   const logger = createPrint();
-  print(stats.modules, stats.chunks, {}, 0, logger);
+  print(stats.modules, stats.chunks, {}, {}, 0, logger);
   t.snapshot(logger());
 });
 
@@ -40,7 +40,7 @@ test("should properly print multi entry stats.json", async (t) => {
     normalizeStats(await getStats(f.find("multi-entry-stats.json")))
   );
   const logger = createPrint();
-  print(stats.modules, stats.chunks, {}, 0, logger);
+  print(stats.modules, stats.chunks, {}, {}, 0, logger);
   t.snapshot(logger());
 });
 
@@ -51,7 +51,7 @@ test("should properly print multi entry stats.json with dynamic import", async (
     )
   );
   const logger = createPrint();
-  print(stats.modules, stats.chunks, {}, 0, logger);
+  print(stats.modules, stats.chunks, {}, {}, 0, logger);
   t.snapshot(logger());
 });
 
@@ -60,7 +60,7 @@ test("should properly print multi entry stats.json with no chunks information", 
     normalizeStats(await getStats(f.find("multi-entry-no-chunks-stats.json")))
   );
   const logger = createPrint();
-  print(stats.modules, stats.chunks, {}, 0, logger);
+  print(stats.modules, stats.chunks, {}, {}, 0, logger);
   t.snapshot(logger());
 });
 
@@ -69,7 +69,7 @@ test("should properly print stats.json with nested children", async (t) => {
     normalizeStats(await getStats(f.find("nested-children-stats.json")))
   );
   const logger = createPrint();
-  print(stats.modules, stats.chunks, {}, 0, logger);
+  print(stats.modules, stats.chunks, {}, {}, 0, logger);
   t.snapshot(logger());
 });
 
@@ -78,6 +78,6 @@ test("should properly print stats.json with nested children second example", asy
     normalizeStats(await getStats(f.find("nested-children-stats2.json")))
   );
   const logger = createPrint();
-  print(stats.modules, stats.chunks, {}, 0, logger);
+  print(stats.modules, stats.chunks, {}, {}, 0, logger);
   t.snapshot(logger());
 });
