@@ -1,5 +1,5 @@
 {
-  "name": "whybundled",
+  "name": "los-whybundled",
   "version": "2.0.0",
   "description": "Answers the question – Why the hell is this module in a bundle?",
   "bin": {
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/d4rkr00t/whybundled"
+    "url": "https://github.com/Legal-OS/whybundled"
   },
   "engines": {
     "node": ">=8.4"
